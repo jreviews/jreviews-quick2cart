@@ -1,0 +1,78 @@
+<?php
+/**********************************************************************************
+ *                                 CONFIGURATION AND SETUP
+ **********************************************************************************/
+$qtc_base_url = JURI::root();
+
+/**********************************************************************************
+ *                                 EDIT HTML BELOW THIS LINE
+ **********************************************************************************/
+?>
+
+<div class="jr-page jrPage jrQ2cartEdit">
+
+    <h1><?php __t("Edit Store Information");?></h1>
+
+    <div class="jrClear"></div>
+
+        <?php echo $Html->sefLink('<span class="jrIconPrev"></span>'.$listing['Listing']['title'],$listing['Listing']['url'], array('class'=>'jrButton'));?>
+
+
+    <div class="jr-q2cart jrForm">
+
+        <fieldset>
+
+            <?php echo $form;?>
+
+            <input type="hidden" name="listing_id" value="<?php echo $listing['Listing']['listing_id'];?>" />
+
+        </fieldset>
+
+    </div>
+
+ </div>
+
+<?php
+/**********************************************************************************
+ *                                 JAVASCRIPT
+ **********************************************************************************/
+?>
+<script>
+/* <![CDATA[ */
+(function($) {
+
+    // Automatically expact the product add form
+    var qtcEnableQtcProd = $('#qtcEnableQtcProd');
+
+    qtcEnableQtcProd.parents('.control-group').hide();
+
+    if(qtcEnableQtcProd.length) {
+        qtcEnableQtcProd.trigger('click');
+    }
+
+    // Attach spinner and sync to JReviews Listing for Q2C product save button
+
+    var el = $("#qtcOptionsWraper button.btn-success"),
+        spinner = $('<span class="jrLoadingSmall">');
+
+    var onclick = el.attr("onclick");
+
+    el.attr("onclick","").on("click", function(e) {
+
+        e.preventDefault();
+
+        el.after(spinner);
+
+        var syncCartToListing = jreviews.dispatch({form : $('.jr-q2cart :input'), controller : 'quick2cart', action : 'syncCartToListing'});
+
+        syncCartToListing.done(function() {
+
+            spinner.remove();
+
+            eval(onclick);
+        });
+    });
+
+})(jQuery);
+/* ]]> */
+</script>

@@ -1,0 +1,59 @@
+msgid "ADDON_QUICK2CART_TITLE"
+msgstr "Quick2cart Add-on"
+
+msgid "ADDON_QUICK2CART_MENU_CONFIGURATION"
+msgstr "Configuration"
+
+msgid "ADDON_QUICK2CART_MAIN_SETTINGS"
+msgstr "Main Settings"
+
+msgid "ADDON_QUICK2CART_DISPLAY_SETTINGS"
+msgstr "Display Settings"
+
+msgid "ADDON_QUICK2CART_LISTING_TYPES"
+msgstr "Listing Types"
+
+msgid "ADDON_QUICK2CART_LISTING_TYPES_HELP"
+msgstr "Specify the listing types that will be used for the integration."
+
+msgid "ADDON_QUICK2CART_SKU_FIELD"
+msgstr "SKU Custom Field"
+
+msgid "ADDON_QUICK2CART_FIELD_HELP"
+msgstr "If you select a JReviews custom field, the add-on will synchronize the value of the JReviews field with the Quick2cart equivalent when edited from JReviews or Quick2cart."
+
+msgid "ADDON_QUICK2CART_DOWNLOADS_DETAIL_PAGE_POSITION"
+msgstr "Downloads detail page display position"
+
+msgid "ADDON_QUICK2CART_BUY_SHOW_PRICE"
+msgstr "Display price together with Buy button"
+
+msgid "ADDON_QUICK2CART_BUY_LISTVIEW"
+msgstr "Buy Button in List View"
+
+msgid "ADDON_QUICK2CART_BUY_DETAILVIEW"
+msgstr "Buy Button in Detail View"
+
+msgid "ADDON_QUICK2CART_SYNC_SETTINGS"
+msgstr "Field Synchronization Settings"
+
+msgid "ADDON_QUICK2CART_STANDARD_PRICE_SETUP"
+msgstr "Standard Price Sync Setup"
+
+msgid "ADDON_QUICK2CART_DISCOUNT_PRICE_SETUP"
+msgstr "Discount Price Sync Setup"
+
+msgid "ADDON_QUICK2CART_PRICE_FIELD"
+msgstr "Price Custom Field"
+
+msgid "ADDON_QUICK2CART_DISCOUNT_PRICE_FIELD"
+msgstr "Discount Price Custom Field"
+
+msgid "ADDON_QUICK2CART_CURRENCY"
+msgstr "Currency"
+
+msgid "ADDON_QUICK2CART_ACCESS_SETTINGS"
+msgstr "Access Settings"
+
+msgid "ADDON_QUICK2CART_EDIT_PRODUCT_ACCESS"
+msgstr "Edit Product Form"

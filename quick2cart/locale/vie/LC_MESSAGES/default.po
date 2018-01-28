@@ -1,0 +1,23 @@
+msgid "ADDON_QUICK2CART_EDIT"
+msgstr "Sửa Sản Phẩm"
+
+msgid "ADDON_QUICK2CART_PAID_DOWNLOAD"
+msgstr "Paid Download"
+
+msgid "ADDON_QUICK2CART_DOWNLOAD_NOT_AUTHORIZED"
+msgstr "Not Authorized"
+
+msgid "ADDON_QUICK2CART_MY_DOWNLOADS"
+msgstr "Xem tất cả download của tôi"
+
+msgid "ADDON_QUICK2CART_DOWNLOAD_FREE"
+msgstr "Free Download"
+
+msgid "ADDON_QUICK2CART_DOWNLOAD_PAID"
+msgstr "Paid Download"
+
+msgid "ADDON_QUICK2CART_DOWNLOADS"
+msgstr "Download"
+
+msgid "ADDON_QUICK2CART_LISTING_SUBMIT_ACTIONS"
+msgstr "To complete the setup for this product and publish the Buy Button on your listing go to the %s page. You can do this after you finish uploading media, or at any time later on from the detail page for your listing."

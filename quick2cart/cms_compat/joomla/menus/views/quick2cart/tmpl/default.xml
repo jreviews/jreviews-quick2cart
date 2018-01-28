@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<metadata>
+    <layout title="COM_JREVIEWS_QUICK2CART_EDIT_VIEW_DEFAULT_TITLE">
+            <![CDATA[COM_JREVIEWS_QUICK2CART_EDIT_VIEW_DEFAULT_TITLE]]>
+    </layout>
+
+    <fields name="params">
+
+        <fieldset name="basic" label="JReviews">
+
+            <field name="action" type="list" default="" label="Type of Menu" description="Choose a menu type">
+                <option value="edit">Edit Product</option>
+            </field>
+
+        </fieldset>
+
+    </fields>
+
+</metadata>

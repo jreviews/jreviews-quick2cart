@@ -1,0 +1,80 @@
+/**
+ * Buy button output
+ */
+.q2c-wrapper .qtc_count {
+	width: 45px!important;
+	text-align: center;
+}
+.jrFieldGroup .control-group {
+	margin-bottom: 0;
+}
+.jrFieldValue .control-group {
+	margin-bottom: 5px;
+}
+.jrCustomFields .techjoomla-bootstrap .form-horizontal .control-label {
+    float:left;
+    clear:right;
+    width: 110px;
+    text-align: left;
+}
+.jrCustomFields .techjoomla-bootstrap .form-horizontal .controls {
+    margin-left: 0;
+}
+/**
+ * Fixes for product edit form
+ */
+.jrQ2cartEdit .qtc_currencey_textbox .curr_margin .control-label,
+.jrQ2cartEdit .control-label {
+    float:left;
+    min-width: 200px;
+    clear:left;
+}
+.jrQ2cartEdit .qtc_currencey_textbox .control-label {
+    float:none;
+    display:block;
+    margin-bottom: 10px;
+}
+.jrQ2cartEdit .q2c-wrapper .qtc_currencey_textbox input[type="text"] {
+    height: 35px!important;
+    padding: 4px 6px!important;
+}
+
+.jrQ2cartEdit input.qtc_itemstate.btn-group {
+    margin-left: 0;
+}
+.jrQ2cartEdit input.input-medium {
+    width: 300px;
+}
+.jrQ2cartEdit .input-mini {
+    display:inline!important;
+}
+.jrQ2cartEdit .alert {
+    padding: 0;
+    margin: 10px 0;
+}
+.jrQ2cartEdit button {
+    margin-bottom: 15px;
+}
+/* Override for attribute/media buttons */
+.jrQ2cartEdit a.btn {
+    display: inline-table;
+    background-color: #3a87ad;
+    margin-bottom: 10px;
+}
+.jrQ2cartEdit hr {
+    margin:0;
+    padding:0;
+}
+.jrQ2cartEdit table.item_attris a.btn {
+    display: inline;
+    background-color: #3a87ad;
+    padding: 1px 5px;
+    margin: 0;
+    border-radius: 3px;
+}
+/* Styles for mobile devices */
+@media (max-width: 488px) {
+  .jrQ2cartEdit .controls {
+    clear: left;
+  }
+}

@@ -1,0 +1,41 @@
+msgid "ADDON_QUICK2CART_TITLE"
+msgstr "Quick2cart Add-on"
+
+msgid "ADDON_QUICK2CART_MENU_CONFIGURATION"
+msgstr "Cấu Hình"
+
+msgid "ADDON_QUICK2CART_MAIN_SETTINGS"
+msgstr "Thiết Lập Chính"
+
+msgid "ADDON_QUICK2CART_DISPLAY_SETTINGS"
+msgstr "Thiết Lập Hiển Thị"
+
+msgid "ADDON_QUICK2CART_LISTING_TYPES"
+msgstr "Loại Listing"
+
+msgid "ADDON_QUICK2CART_LISTING_TYPES_HELP"
+msgstr "Chỉ định lại listing được sử dụng để tích hợp."
+
+msgid "ADDON_QUICK2CART_SKU_FIELD"
+msgstr "Trường SKU Custom"
+
+msgid "ADDON_QUICK2CART_FIELD_HELP"
+msgstr "Nếu bạn chọn một trường tùy chọn JReviews , add-on sẽ đồng bộ giá trị của trường JReviews với tương đương của Quick2cart khi chỉnh sửa trên JReviews hay Quick2cart."
+
+msgid "ADDON_QUICK2CART_DOWNLOADS_DETAIL_PAGE_POSITION"
+msgstr "Vị trí hiển thị trang Download chi tiết"
+
+msgid "ADDON_QUICK2CART_BUY_SHOW_PRICE"
+msgstr "Hiển thị giá cùng với nút Mua"
+
+msgid "ADDON_QUICK2CART_BUY_LISTVIEW"
+msgstr "Nút Mua Ngay trong List View"
+
+msgid "ADDON_QUICK2CART_PRICE_CURRENCY_SETUP"
+msgstr "Thiết lập Giá và Tiền Tệ"
+
+msgid "ADDON_QUICK2CART_PRICE_FIELD"
+msgstr "Trường Giá Custom %d"
+
+msgid "ADDON_QUICK2CART_CURRENCY"
+msgstr "Tiền tệ %d"

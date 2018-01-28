@@ -1,0 +1,97 @@
+<?php
+/*
+ * This file is part of the JReviews Quick2Cart Add-on
+ *
+ * Copyright (C) ClickFWD LLC 2010-2018 <sales@jreviews.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+defined( 'MVC_FRAMEWORK') or die( 'Direct Access to this location is not allowed.' );
+
+
+/**********************************************************************************
+ * 								CONFIGURATION AND SETUP
+ **********************************************************************************/
+?>
+
+<div class="q2cDownloads jrClear">
+
+	<h3 class="jrHeading">
+
+		<span class="jrIconAttachment"></span>
+
+		<span class="jrHeadingText"><?php __t("ADDON_QUICK2CART_DOWNLOADS");?></span>
+
+		<?php if($User->id):?>
+
+			<a class="jrButton jrSmall jrRight" href="<?php echo $Quick2cartRoutes->myDownloadsUrl();?>"><?php __t("ADDON_QUICK2CART_MY_DOWNLOADS");?></a>
+
+		<?php endif;?>
+
+	</h3>
+
+	 <div class="jr-attachments jrMediaContainer jrAttachments">
+
+		<ul class="jrDataList">
+
+			<?php foreach($q2cDownloads AS $attachment):?>
+
+				<?php
+					$file_ext = pathinfo($attachment['filename'], PATHINFO_EXTENSION);
+					$filetype_img_url = ThemingComponent::getImageUrl('filetype/'.$file_ext.'.png');
+					$filetype_img_path = ThemingComponent::getImagePath('filetype/'.$file_ext.'.png');
+
+					if (file_exists($filetype_img_path))
+					{
+						$attachment_type = '<img src="'.$filetype_img_url.'"/>';
+					} else
+					{
+						$attachment_type = $file_ext;
+					}
+
+				 ?>
+				<li>
+
+					<div class="jrGrid">
+
+						<div class="jrCol6 jrAttachmentDescription"><strong><?php echo $attachment['title'];?></strong></div>
+
+						<div class="jrCol2 jrAttachmentType"><?php echo $attachment_type; ?></div>
+
+	<?php /*		<div class="jrCol2 jrAttachmentDownloads"><?php echo (int) $attachment['views']; ?></div> */?>
+
+						<div class="jrCol4 jrAttachmentDownloadButton">
+
+							<?php if($attachment['download_allowed']):?>
+
+							<a class="jrButton jrSmall" href="<?php echo $attachment['download_link'];?>">
+
+								<span class="jrIconArrowDown"></span><?php echo $attachment['purchase_required'] ? __t("ADDON_QUICK2CART_DOWNLOAD_PAID",true) : __t("ADDON_QUICK2CART_DOWNLOAD_FREE",true);?>
+
+							</a>
+
+							<?php elseif($User->id && $attachment['purchased']):?>
+
+							<button disabled class="jrButton jrSmall"><span class="jrIconArrowDown"></span><?php __t("ADDON_QUICK2CART_DOWNLOAD_NOT_AUTHORIZED");?></button>
+
+							<?php else:?>
+
+							<button disabled class="jrButton jrSmall"><span class="jrIconArrowDown"></span><?php __t("ADDON_QUICK2CART_PAID_DOWNLOAD");?></button>
+
+							<?php endif;?>
+
+						</div>
+
+					</div>
+
+				</li>
+
+			<?php endforeach; ?>
+
+		</ul>
+
+	</div>
+
+</div>

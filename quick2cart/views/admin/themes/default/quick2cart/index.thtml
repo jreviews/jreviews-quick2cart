@@ -1,0 +1,195 @@
+<?php
+/*
+ * This file is part of the JReviews Quick2Cart Add-on
+ *
+ * Copyright (C) ClickFWD LLC 2010-2018 <sales@jreviews.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+$accessGroupsGuest = $accessGroups;
+
+$accessGroupsNoGuest = array_slice($accessGroups,1);
+?>
+
+<div class="jr-quick2cart-admin">
+
+    <div class="jrPageHeading"><?php __a("ADDON_QUICK2CART_TITLE");?></div>
+
+    <form id="jr-page-form" class="jrForm" action="index.php" method="post">
+
+        <div class="jrPageToolbar jrRoundedPanel">
+
+            <span id="jr-status" class="jrLeft jrStatus"></span>
+
+            <button class="jr-save-settings jrButton jrGreen">
+
+                <span class="jrIconSave"></span><?php __a("Save");?>
+
+            </button>
+
+        </div>
+
+       <div>
+
+           <?php
+            $priceArray = Sanitize::getVar($this->Config,'quick2cart-price');
+
+            if(empty($priceArray))
+            {
+                $priceArray = array(array('field'=>'','currency'=>''));
+            }
+
+            $discountPriceArray = Sanitize::getVar($this->Config,'quick2cart-discount-price');
+
+            if(empty($discountPriceArray))
+            {
+                $discountPriceArray = array(array('field'=>'','currency'=>''));
+            }
+
+            $syncSettingsArray = array(
+                array(
+                    'label'=>__a("ADDON_QUICK2CART_SKU_FIELD",true),
+                    'type'=>'text',
+                    'name'=>'data[Config][quick2cart-sku-field]',
+                    'attributes'=>array('class'=>'jr-field-suggest jrAutoSuggest'),
+                    'help'=>__a("ADDON_QUICK2CART_FIELD_HELP",true)
+                ),
+                array(
+                    'label'=>__a("ADDON_QUICK2CART_STANDARD_PRICE_SETUP",true),
+                    'type'=>'placeholder'
+                )
+            );
+
+            $standard_count = count($priceArray);
+
+            for($i=0;$i<$standard_count;$i++)
+            {
+                $syncSettingsArray[] = array(
+                    'label'=>__a("ADDON_QUICK2CART_PRICE_FIELD",true),
+                    'type'=>'text',
+                    'name'=>'data[Config][quick2cart-price]['.$i.'][field]',
+                    'default'=>$priceArray[$i]['field'],
+                    'before'=>'<span class="jrLeft"><input type="text" class="jr-price-currency" name="data[Config][quick2cart-price]['.$i.'][currency]" placeholder="'.__a("ADDON_QUICK2CART_CURRENCY",true).'" style="width: 65px;" value="'.$priceArray[$i]['currency'].'" /></span>',
+                    'after'=>$i > 0 ? '<button class="jr-q2c-remove-price jrButton jrIconOnly" data-type="price"><span class="jrIconRemove"></span></button>' : '',
+                    'attributes'=>array('class'=>'jr-field-suggest jrAutoSuggest','placeholder'=>__a("ADDON_QUICK2CART_PRICE_FIELD",true)),
+                    'help'=>$i == 0 ? "Add the currency symbol (USD, EUR, etc.) and the JReviews custom field name that you want to use to sync the Quick2Cart price value for this currency. This synchronization feature is useful if you want your site visitors to be able to perform price searches using JReviews." : ''
+                );
+            }
+
+            $syncSettingsArray[] = array(
+                'type'=>'separator',
+                'label'=>'&nbsp;',
+                'text'=>'<a href="#" class="jr-q2c-new-price jrButton jrSmall jrBlue" data-type="price"><span class="jrIconPlus"></span> Add new currency</a>'
+            );
+
+            $syncSettingsArray[] = array(
+                'label'=>__a("ADDON_QUICK2CART_DISCOUNT_PRICE_SETUP",true),
+                'type'=>'placeholder'
+            );
+
+            $discount_count = count($discountPriceArray);
+
+            for($i=0;$i<$discount_count;$i++)
+            {
+                $syncSettingsArray[] = array(
+                    'label'=>__a("ADDON_QUICK2CART_DISCOUNT_PRICE_FIELD",true),
+                    'type'=>'text',
+                    'name'=>'data[Config][quick2cart-discount-price]['.$i.'][field]',
+                    'default'=>$discountPriceArray[$i]['field'],
+                    'before'=>'<span class="jrLeft"><input type="text" class="jr-discount-price-currency" name="data[Config][quick2cart-discount-price]['.$i.'][currency]" placeholder="'.__a("ADDON_QUICK2CART_CURRENCY",true).'" style="width: 65px;" value="'.$discountPriceArray[$i]['currency'].'" /></span>',
+                    'after'=>$i > 0 ? '<button class="jr-q2c-remove-discount-price jrButton jrIconOnly" data-type="discount-price"><span class="jrIconRemove"></span></button>' : '',
+                    'attributes'=>array('class'=>'jr-field-suggest jrAutoSuggest','placeholder'=>__a("ADDON_QUICK2CART_DISCOUNT_PRICE_FIELD",true)),
+                    'help'=>$i == 0 ? "Add the currency symbol (USD, EUR, etc.) and the JReviews custom field name that you want to use to sync the Quick2Cart price value for this currency. This synchronization feature is useful if you want your site visitors to be able to perform price searches using JReviews." : ''
+                );
+            }
+
+            $syncSettingsArray[] = array(
+                'type'=>'separator',
+                'label'=>'&nbsp;',
+                'text'=>'<a href="#" class="jr-q2c-new-discount-price jrButton jrSmall jrBlue" data-type="discount-price"><span class="jrIconPlus"></span> Add new currency</a>'
+            );
+
+            $configArray = array(
+                /*** NEW HEADER ***/
+                __a("ADDON_QUICK2CART_MAIN_SETTINGS",true) => array(
+                    array(
+                        'label'=>__a("ADDON_QUICK2CART_LISTING_TYPES",true),
+                        'type'=>'selectmultiple',
+                        'options'=>$listingTypes,
+                        'name'=>'data[Config][quick2cart-listingtypes]',
+                        'help'=>__a("ADDON_QUICK2CART_LISTING_TYPES_HELP",true),
+                        'required'=>true,
+                        'attributes'=>array('jr-multiselect')
+                    )
+                ),
+                __a("ADDON_QUICK2CART_SYNC_SETTINGS",true) => $syncSettingsArray,
+                __a("ADDON_QUICK2CART_DISPLAY_SETTINGS",true) => array(
+                    array('text'=>'<div class="jrInfo" style="margin: 0!important;">You can add the Buy button output to a custom theme position with the following code <strong>&lt;?php echo $CustomFields->field("jr_addon_quick2cart", $listing);?&gt;</strong> or by using the {jr_addon_quick2cart} tag in a Banner field.</div>',
+                        'type'=>'placeholder'
+                    ),
+                    array(
+                        'label'=>__a("ADDON_QUICK2CART_BUY_SHOW_PRICE",true),
+                        'type'=>'radioYesNo',
+                        'name'=>'data[Config][quick2cart-buy-showprice]',
+                        'help'=>__a("If you sync the price with a JReviews field,  you can display the JReviews price field instead.",true),
+                        'default'=>0
+                    ),
+                    array(
+                        'label'=>__a("ADDON_QUICK2CART_BUY_DETAILVIEW",true),
+                        'type'=>'radioYesNo',
+                        'name'=>'data[Config][quick2cart-buy-detailview]',
+                        'default'=>1,
+                        'help'=>''
+                    ),
+                    array(
+                        'label'=>__a("ADDON_QUICK2CART_BUY_LISTVIEW",true),
+                        'type'=>'radioYesNo',
+                        'name'=>'data[Config][quick2cart-buy-listview]',
+                        'default'=>0,
+                        'help'=>__a("Only works in blogview and tableview where custom fields are displayed.",true)
+                    ),
+                    array(
+                        'label'=>__a("ADDON_QUICK2CART_DOWNLOADS_DETAIL_PAGE_POSITION",true),
+                        'type'=>'select',
+                        'name'=>'data[Config][quick2cart-detailposition]',
+                        'default'=>'below-fields',
+                        'options'=>array(
+                                'below-fields'=>__a("Below Custom Fields",true),
+                                'below-description'=>__a("Below Summary/Description",true),
+                                'below-socialbookmarks'=>__a("Below Social Bookmarks",true),
+                                'below-bottommedia'=>__a("Below Media",true),
+                                'below-editorreviews'=>__a("Below Editor Reviews",true),
+                                'below-userreviews'=>__a("Below User Reviews",true)
+                                ),
+                        'help'=>__a("These are e-downloads uploaded for Quick2Cart Products",true)
+                    )
+                ),
+                __a("ADDON_QUICK2CART_ACCESS_SETTINGS",true) => array(
+                    array(
+                        'label'=>__a("ADDON_QUICK2CART_EDIT_PRODUCT_ACCESS",true),
+                        'type'=>'selectmultiple',
+                        'name'=>'data[Config][quick2cart-edit-product-access]',
+                        'options'=>$accessGroupsNoGuest,
+                        'default'=>array(7,8),
+                        'help'=>__a("Select all groups allowed to edit store product information.",true)
+                    )
+                )
+            );
+
+            $AdminSettings->columns = array(5,10,9);
+
+            $AdminSettings->displayTab('general',$configArray);
+            ?>
+
+        </div><!-- end tabs -->
+
+        <input type="hidden" name="data[controller]" value="admin/admin_quick2cart" />
+
+        <input type="hidden" name="data[action]" value="_save" />
+
+    </form>
+
+
+</div>

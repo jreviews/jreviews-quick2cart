@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<addon>
+	<title>Quick2Cart Add-on</title>
+	<name>quick2cart</name>
+	<description><![CDATA[Quick2cart Add-on]]></description>
+	<author>ClickFWD LLC</author>
+	<url>https://www.jreviews.com</url>
+	<version>1.1.1.1</version>
+	<created>Jan 2018</created>
+	<minappversion>2.7.3.1</minappversion>
+	<copyright>Copyright (C) 2010-2018 ClickFWD LLC</copyright>
+	<license>MIT</license>
+</addon>

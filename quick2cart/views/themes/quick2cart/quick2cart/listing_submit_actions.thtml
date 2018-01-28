@@ -1,0 +1,22 @@
+<?php
+/*
+ * This file is part of the JReviews Quick2Cart Add-on
+ *
+ * Copyright (C) ClickFWD LLC 2010-2018 <sales@jreviews.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+defined( 'MVC_FRAMEWORK') or die( 'Direct Access to this location is not allowed.' );
+
+$Quick2cartRoutes = ClassRegistry::getClass('Quick2cartRoutesHelper');
+
+$editProductButton = $Quick2cartRoutes->edit($listing, array('rel' => 'nofollow', 'class' => 'jrButton', 'target' => '_blank'));
+?>
+
+<div class="jrRoundedPanelLt">
+
+	<p><?php echo sprintf(__t("ADDON_QUICK2CART_LISTING_SUBMIT_ACTIONS" ,true) , $editProductButton);?></p>
+
+</div>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+	<menu>
+		<options var="view">
+			<option name="COM_JREVIEWS_QUICK2CART_EDIT" msg="COM_JREVIEWS_QUICK2CART_EDIT_MSG" value="quick2cart" />
+		</options>
+	</menu>
+</metadata>
+
+

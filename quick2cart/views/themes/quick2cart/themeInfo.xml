@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<theme>
+    <creationDate>July 2014</creationDate>
+    <author>ClickFWD</author>
+    <authorEmail>support@jreviews.com</authorEmail>
+    <authorUrl>https://www.jreviews.com</authorUrl>
+    <copyright>Copyright (C) 2010-2018 ClickFWD LLC. All rights reserved.</copyright>
+    <license>MIT</license>
+    <version>2.4</version>
+    <description>Quick2cart Add-on theme files</description>
+    <settings>
+        <name>quick2cart</name>
+        <title>Quick2Cart Add-on</title>
+        <configuration>0</configuration>
+        <fallback>0</fallback>
+    </settings>
+</theme>
