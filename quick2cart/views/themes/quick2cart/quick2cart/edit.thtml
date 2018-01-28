@@ -15,7 +15,7 @@ $qtc_base_url = JURI::root();
 
     <div class="jrClear"></div>
 
-        <?php echo $Html->sefLink('<span class="jrIconPrev"></span>'.$listing['Listing']['title'],$listing['Listing']['url'], array('class'=>'jrButton'));?>
+        <?php echo $Html->sefLink('<span class="jrIconPrev"></span>'.$listing['Listing']['title'],$listing['Listing']['url'], ['class'=>'jrButton']);?>
 
 
     <div class="jr-q2cart jrForm">

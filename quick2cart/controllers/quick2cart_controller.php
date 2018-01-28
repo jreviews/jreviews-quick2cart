@@ -16,46 +16,31 @@ defined('MVC_FRAMEWORK') or die;
 
 class Quick2cartController extends MyController
 {
-	var $uses = array('menu','user','Field');
+	var $uses = ['menu','user','Field'];
 
-	var $helpers = array('html','assets');
+	var $helpers = ['html'];
 
-	var $components = array('config','everywhere');
+	var $components = ['config','everywhere'];
 
     var $autoRender = false;
 
     var $autoLayout = false;
 
-	function beforeFilter()
-	{
-		parent::beforeFilter();
-	}
-
 	function edit()
 	{
         $listing_id = Sanitize::getInt($this->params,'id');
 
-        $User = cmsFramework::getUser();
-
-        if(!$listing_id)
+        if( !$listing_id )
         {
-            return JError::raiseError(404, JText::_('JERROR_LAYOUT_PAGE_NOT_FOUND'));
+            return $this->response->html()->not_found();
         }
 
-        if(!$User->id)
+        if ( $this->auth->guest )
         {
-            echo cmsFramework::noAccess();
-
-            return;
+            return $this->response->html()->access_denied();
         }
 
-        $this->assets['js'][] = 'jreviews';
-
-        $this->assets['css'][] = 'theme';
-
-        $this->assets['css'][] = 'form';
-
-        $this->assets['css'][] = 'quick2cart';
+        $this->asset_manager->add('quick2cart.css','addon');
 
         // Load quick2cart libraries
 
@@ -67,11 +52,11 @@ class Quick2cartController extends MyController
 
         // Get the listing info
 
-        $this->Listing->addStopAfterFindModel(array('Community','Favorite','Media','PaidOrder'));
+        $this->Listing->addStopAfterFindModel(['Community','Favorite','Media','PaidOrder']);
 
-        $listing = $this->Listing->findRow(array('conditions'=>array('Listing.id = ' . $listing_id)));
+        $listing = $this->Listing->findRow(['conditions'=>['Listing.id = ' . $listing_id]]);
 
-        $storeList = array();
+        $storeList = [];
 
         $this->syncListingToCart($listing, $storeList);
 
@@ -85,6 +70,13 @@ class Quick2cartController extends MyController
 
         // $itemDetail['name'] = $listing['Listing']['title'];
 
+        // Load component models
+        JModelLegacy::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_quick2cart/models');
+        $Quick2cartModelWeights = JModelLegacy::getInstance('Weights', 'Quick2cartModel');
+        $Quick2cartModelLengths = JModelLegacy::getInstance('Lengths', 'Quick2cartModel');
+        $this->weightClasses = $Quick2cartModelWeights->getItems();
+        $this->lengthClasses = $Quick2cartModelLengths->getItems();
+
         ob_start();
 
         include($Q2cartHelper->getViewpath('attributes','','SITE','SITE'));
@@ -93,13 +85,13 @@ class Quick2cartController extends MyController
 
         ob_end_clean();
 
-        $this->set(array(
+        $this->set([
             'form'=>$form,
             'listing'=>$listing,
             'storeList'=>$storeList,
             'pid'=>$pid,
             'client'=>$client
-            ));
+            ]);
 
         return $this->render('quick2cart','edit');
 	}
@@ -115,7 +107,7 @@ class Quick2cartController extends MyController
             return false;
         }
 
-        $sku_field = Sanitize::getVar($this->Config,'quick2cart-sku-field');
+        $sku_field = $this->config->{'quick2cart-sku-field'};
 
         $sku = Sanitize::getString($post,'sku');
 
@@ -125,7 +117,7 @@ class Quick2cartController extends MyController
 
         // Now add the synched info to the JReviews listing fields data array
 
-        $data = array();
+        $data = [];
 
         if($sku_field)
         {
@@ -134,9 +126,9 @@ class Quick2cartController extends MyController
 
         // Load field config settings
 
-        $priceArrayConfig = Sanitize::getVar($this->Config,'quick2cart-price',array());
+        $priceArrayConfig = $this->config->get('quick2cart-price',[]);
 
-        $discountPriceArrayConfig = Sanitize::getVar($this->Config,'quick2cart-discount-price',array());
+        $discountPriceArrayConfig = $this->config->get('quick2cart-discount-price',[]);
 
         foreach($priceArrayConfig AS $priceRow)
         {
@@ -174,8 +166,6 @@ class Quick2cartController extends MyController
     {
         $listing_id = Sanitize::getInt($listing['Listing'],'listing_id');
 
-        $User = cmsFramework::getUser();
-
         // Force all prices to be prefilled at least with zero so the e-download and attrbute buttons are not disabled
 
         $q2cParams = JComponentHelper::getParams('com_quick2cart');
@@ -205,7 +195,7 @@ class Quick2cartController extends MyController
         // The product array that is returned is missing the retail and discount pricing arrays so we need to run a different method after we get the internal Q2C item_id
         // It's all a bit redundant, but Q2C doesn't offer a direct method to do it
 
-        $productPriceArray = $productDiscountPriceArray = array();
+        $productPriceArray = $productDiscountPriceArray = [];
 
         if(!empty($product_tmp))
         {
@@ -222,18 +212,18 @@ class Quick2cartController extends MyController
         }
         else {
 
-            $product = array();
+            $product = [];
 
-            $productPriceArray = array($def_curr=>Sanitize::getFloat($product, 'price'));
+            $productPriceArray = [$def_curr=>Sanitize::getFloat($product, 'price')];
         }
 
-        $storeList = (array) $Q2CStoreHelper->getUserStore($User->id);
+        $storeList = (array) $Q2CStoreHelper->getUserStore($this->auth->id);
 
         // Load field config settings
 
-        $priceArrayConfig = Sanitize::getVar($this->Config,'quick2cart-price',array());
+        $priceArrayConfig = $this->config->get('quick2cart-price',[]);
 
-        $discountPriceArrayConfig = Sanitize::getVar($this->Config,'quick2cart-discount-price',array());
+        $discountPriceArrayConfig = $this->config->get('quick2cart-discount-price',[]);
 
         // Retail price
 
@@ -273,7 +263,7 @@ class Quick2cartController extends MyController
             }
         }
 
-        $sku_field = Sanitize::getVar($this->Config,'quick2cart-sku-field');
+        $sku_field = $this->config->{'quick2cart-sku-field'};
 
         // Sync title
 

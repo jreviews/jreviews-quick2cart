@@ -24,7 +24,7 @@ defined( 'MVC_FRAMEWORK') or die( 'Direct Access to this location is not allowed
 
 		<span class="jrHeadingText"><?php __t("ADDON_QUICK2CART_DOWNLOADS");?></span>
 
-		<?php if($User->id):?>
+		<?php if($this->auth->id):?>
 
 			<a class="jrButton jrSmall jrRight" href="<?php echo $Quick2cartRoutes->myDownloadsUrl();?>"><?php __t("ADDON_QUICK2CART_MY_DOWNLOADS");?></a>
 
@@ -72,7 +72,7 @@ defined( 'MVC_FRAMEWORK') or die( 'Direct Access to this location is not allowed
 
 							</a>
 
-							<?php elseif($User->id && $attachment['purchased']):?>
+							<?php elseif($this->auth->id && $attachment['purchased']):?>
 
 							<button disabled class="jrButton jrSmall"><span class="jrIconArrowDown"></span><?php __t("ADDON_QUICK2CART_DOWNLOAD_NOT_AUTHORIZED");?></button>
 

@@ -13,7 +13,7 @@ S2App::import('Component','locale','jreviews');
  * Language strings that will be used in javascript can be defined here
  */
 JReviewsLocale::addStrings('js',
-	array(
+	[
 		// 'LANGUAGE_STRING_CONSTANT'=>__a("Language string")
-	)
+	]
 );

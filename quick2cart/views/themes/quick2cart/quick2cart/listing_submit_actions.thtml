@@ -12,7 +12,7 @@ defined( 'MVC_FRAMEWORK') or die( 'Direct Access to this location is not allowed
 
 $Quick2cartRoutes = ClassRegistry::getClass('Quick2cartRoutesHelper');
 
-$editProductButton = $Quick2cartRoutes->edit($listing, array('rel' => 'nofollow', 'class' => 'jrButton', 'target' => '_blank'));
+$editProductButton = $Quick2cartRoutes->edit($listing, ['rel' => 'nofollow', 'class' => 'jrButton', 'target' => '_blank']);
 ?>
 
 <div class="jrRoundedPanelLt">

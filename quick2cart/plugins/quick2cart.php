@@ -25,14 +25,14 @@ class Quick2cartComponent extends S2Component {
     /**
     * Limit plugin to run only in specific controller actions
     */
-    var $controllerActions = array(
-        'admin_listings'=>array('_save','_delete'),
-        'listings'=>array('_save','_delete'),
+    var $controllerActions = [
+        'admin_listings'=>['_save','_delete'],
+        'listings'=>['_save','_delete'],
         'com_content'=>'com_content_view',
-        'categories'=>array('all'),
-        'community_listings'=>array('all'),
+        'categories'=>['all'],
+        'community_listings'=>['all'],
         'module_listings'=>'index'
-    );
+    ];
 
     // Holds the array info used to render the e-downloads on the detail page
 
@@ -40,12 +40,15 @@ class Quick2cartComponent extends S2Component {
 
     var $q2cParams;
 
-    function startup(&$controller)
+    function startup(& $controller)
     {
-        /********** LOAD ADDON ADMIN SIDE JS ************/
-        if(defined('MVC_FRAMEWORK_ADMIN') && !$controller->ajaxRequest) {
+        $this->c = & $controller;
 
-            $controller->assets['js'][] = 'admin/addon_quick2cart';
+        $this->config = $controller->config;
+
+        if ( defined('MVC_FRAMEWORK_ADMIN') )
+        {
+            $controller->asset_manager->add('admin/addon_quick2cart.js','addon');
         }
 
         $path = PATH_ROOT . 'components' . DS . 'com_quick2cart' . DS . 'helper.php';
@@ -60,6 +63,11 @@ class Quick2cartComponent extends S2Component {
             require_once($path);
         }
 
+        if(!class_exists('Quick2cartModelcart'))
+        {
+            JLoader::import('cart', JPATH_SITE . '/components/com_quick2cart/models');
+        }
+
         // Alternatively you can run your own checks for controller and actions inside each event
 
         if(!$this->runPlugin($controller))
@@ -67,13 +75,11 @@ class Quick2cartComponent extends S2Component {
             return false;
         }
 
-        if(!defined('MVC_FRAMEWORK_ADMIN'))
+        if ( !defined('MVC_FRAMEWORK_ADMIN') )
         {
-            if(in_array($controller->name,array('com_content','categories')))
+            if ( in_array($controller->name,['com_content','categories']) )
             {
-                $controller->assets['css'] = array_merge(isset($controller->assets['css']) ? $controller->assets['css'] : array(),array(
-                    'quick2cart'
-                    ));
+                $controller->asset_manager->add('quick2cart.css','addon');
             }
         }
 
@@ -82,8 +88,6 @@ class Quick2cartComponent extends S2Component {
         // Make the controller properties available in other methods inside this class
 
         $this->q2cParams = JComponentHelper::getParams('com_quick2cart');
-
-        $this->c = &$controller;
     }
 
     function runPlugin(&$controller)
@@ -97,7 +101,7 @@ class Quick2cartComponent extends S2Component {
 
         $actions = !is_array($this->controllerActions[$controller->name])
                         ?
-                        array($this->controllerActions[$controller->name])
+                        [$this->controllerActions[$controller->name]]
                         :
                         $this->controllerActions[$controller->name];
 
@@ -136,9 +140,9 @@ class Quick2cartComponent extends S2Component {
     */
     function plgBeforeRender()
     {
-        $listingTypes = Sanitize::getVar($this->c->Config,'quick2cart-listingtypes',array());
+        $listingTypes = $this->config->get('quick2cart-listingtypes',[]);
 
-        $listingTypeId = isset($this->c->data['Criteria']) ? Sanitize::getInt($this->c->data['Criteria'], 'id') : null;
+        $listingTypeId = isset($this->c->data['ListingType']) ? Sanitize::getInt($this->c->data['ListingType'], 'listing_type_id') : null;
 
         S2App::import('Helper','quick2cart_routes','jreviews');
 
@@ -148,7 +152,7 @@ class Quick2cartComponent extends S2Component {
 
         $multivendor = $this->q2cParams->get('multivendor');
 
-        if(!Sanitize::getBool($this->c->Config,'quick2cart-buy-showprice', 0))
+        if(!$this->config->get('quick2cart-buy-showprice',0))
         {
             cmsFramework::addCustomTag('
                 <style>
@@ -168,9 +172,9 @@ class Quick2cartComponent extends S2Component {
         {
             if(empty($listingTypes) || !$listingTypeId || !in_array($listingTypeId, $listingTypes)) return;
 
-            $listing_submit_actions = Sanitize::getVar($this->c->viewVars, 'listing_submit_actions', array());
+            $listing_submit_actions = Sanitize::getVar($this->c->viewVars, 'listing_submit_actions', []);
 
-            $bottom = Sanitize::getVar($listing_submit_actions, 'bottom', array());
+            $bottom = Sanitize::getVar($listing_submit_actions, 'bottom', []);
 
             $bottom[] = $this->c->partialRender('quick2cart', 'listing_submit_actions');
 
@@ -185,27 +189,25 @@ class Quick2cartComponent extends S2Component {
         {
             $listings = & $this->c->viewVars['listings'];
 
-            $listingManager = Configure::read('widget_listing_manager', array());
+            $listingManager = Configure::read('widget_listing_manager', []);
 
-            foreach($listings AS $listing)
+            foreach ( $listings AS $listing )
             {
-                if(!in_array($listing['Criteria']['criteria_id'], $listingTypes)) continue;
-
-                $overrides = $listing['ListingType']['config'];
+                if ( !in_array($listing['ListingType']['listing_type_id'], $listingTypes) ) continue;
 
                 $listing_id = (int) $listing['Listing']['listing_id'];
 
-                $canEditListing = $this->c->Access->canEditListing($listing['Listing']['user_id'],$overrides);
+                $canEditListing = $this->c->perm->__('listing')->setListing($listing)->canUpdate();
 
-                $edit_product_groups = Sanitize::getVar($this->c->Config,'quick2cart-edit-product-access',array(7,8));
+                $edit_product_groups = $this->config->get('quick2cart-edit-product-access',[7,8]);
 
-                $canEditProduct = $this->c->Access->in_groups($edit_product_groups);
+                $canEditProduct = $this->c->auth->belongsToGroups($edit_product_groups);
 
                 if($canEditListing && $canEditProduct)
                 {
-                    if($multivendor || (!$multivendor && $this->c->Access->isAdmin()))
+                    if($multivendor || (!$multivendor && $this->c->auth->admin))
                     {
-                        $link = $Quick2cartRoutes->edit($listing, array('rel'=>'nofollow'));
+                        $link = $Quick2cartRoutes->edit($listing, ['rel'=>'nofollow']);
 
                         $listingManager[$listing['Listing']['listing_id']][2][] = $link;
                     }
@@ -221,25 +223,23 @@ class Quick2cartComponent extends S2Component {
         {
             $listing = & $this->c->viewVars['listing'];
 
-            if(!in_array($listing['Criteria']['criteria_id'], $listingTypes)) return false;
-
-            $overrides = $listing['ListingType']['config'];
+            if ( !in_array($listing['ListingType']['listing_type_id'],$listingTypes) ) return false;
 
             $listing_id = (int) $listing['Listing']['listing_id'];
 
-            $canEditListing = $this->c->Access->canEditListing($listing['Listing']['user_id'],$overrides);
+            $canEditListing = $this->c->perm->__('listing')->setListing($listing)->canUpdate();
 
-            $edit_product_groups = Sanitize::getVar($this->c->Config,'quick2cart-edit-product-access',array(7,8));
+            $edit_product_groups = $this->config->get('quick2cart-edit-product-access',[7,8]);
 
-            $canEditProduct = $this->c->Access->in_groups($edit_product_groups);
+            $canEditProduct = $this->c->auth->belongsToGroups($edit_product_groups);
 
             if($canEditListing && $canEditProduct)
             {
-                if($multivendor || (!$multivendor && $this->c->Access->isAdmin()))
+                if($multivendor || (!$multivendor && $this->c->auth->admin))
                 {
-                    $button = $Quick2cartRoutes->edit($listing, array('rel'=>'nofollow','class'=>'jrButton jrSmall'));
+                    $button = $Quick2cartRoutes->edit($listing, ['rel'=>'nofollow','class'=>'jrButton jrSmall']);
 
-                    $listingButtons = Configure::read('widget_listing_buttons_detail', array());
+                    $listingButtons = Configure::read('widget_listing_buttons_detail', []);
 
                     $listingButtons[$listing['Listing']['listing_id']][3][] = $button;
 
@@ -249,7 +249,7 @@ class Quick2cartComponent extends S2Component {
 
             // Downloads table
 
-            $downloads_position = Sanitize::getString($this->c->Config,'quick2cart-detailposition', 'below-fields');
+            $downloads_position = $this->config->get('quick2cart-detailposition','below-fields');
 
             if($this->output_downloads)
             {
@@ -280,14 +280,14 @@ class Quick2cartComponent extends S2Component {
         // Only run in the desired controller actions
 
         if(empty($results)
-            || !in_array($this->c->name,array('com_content','categories','community_listings','module_listings')))
+            || !in_array($this->c->name,['com_content','categories','community_listings','module_listings']))
         {
             return $results;
         }
 
-        $listingTypes = Sanitize::getVar($this->c->Config,'quick2cart-listingtypes',array());
+        $listingTypes = $this->config->get('quick2cart-listingtypes',[]);
 
-        if(empty($listingTypes)) return $results;
+        if ( empty($listingTypes) ) return $results;
 
         // Add the Buy now button in the list and detail pages
 
@@ -305,7 +305,7 @@ class Quick2cartComponent extends S2Component {
 
         foreach($results AS $key=>$result)
         {
-            if(!in_array($result['Criteria']['criteria_id'], $listingTypes))
+            if ( !in_array($result['ListingType']['listing_type_id'], $listingTypes))
             {
                 continue;
             }
@@ -318,11 +318,9 @@ class Quick2cartComponent extends S2Component {
 
             if($this->c->name == 'com_content' && $this->c->action == 'com_content_view')
             {
-                $User = cmsFramework::getUser();
-
                 $Model = new S2Model;
 
-                $files = $purchasedFiles = array();
+                $files = $purchasedFiles = [];
 
                 // First get list of all e-downloads for this listing
 
@@ -355,7 +353,7 @@ class Quick2cartComponent extends S2Component {
                 {
                     $expiry_mode = $this->q2cParams->get('eProdUExpiryMode');
 
-                    if($User->id)
+                    if($this->auth->id)
                     {
                         $query = '
                         SELECT
@@ -380,7 +378,7 @@ class Quick2cartComponent extends S2Component {
                             File.state = 1
                             AND Product.product_id = ' . (int) $result['Listing']['listing_id'] . '
                             AND Product.parent = "com_content"
-                            AND `Order`.user_info_id = ' . (int) $User->id
+                            AND `Order`.user_info_id = ' . (int) $this->auth->id
                         ;
 
                         $purchasedFiles = $Model->query($query, 'loadAssocList', 'file_id');
@@ -434,7 +432,7 @@ class Quick2cartComponent extends S2Component {
                 {
                     $this->c->helpers[] = 'quick2cart_routes';
 
-                    $this->c->set(array('User'=>$User,'q2cDownloads'=>$files));
+                    $this->c->set(['q2cDownloads'=>$files]);
 
                     $this->c->layout = 'module';
 
@@ -455,12 +453,12 @@ class Quick2cartComponent extends S2Component {
 
     function plgBeforeSave(&$model,$data)
     {
-        if(!class_exists('comquick2cartHelper'))
+        if ( !class_exists('comquick2cartHelper') )
         {
             JLoader::import('attributes', PATH_ROOT . DS . 'components' . DS . 'com_quick2cart' . DS . 'helper.php');
         }
 
-        if(!class_exists('quick2cartModelAttributes'))
+        if ( !class_exists('quick2cartModelAttributes') )
         {
             JLoader::import('attributes', JPATH_SITE.DS.'components'.DS.'com_quick2cart'.DS.'models');
         }
@@ -477,11 +475,11 @@ class Quick2cartComponent extends S2Component {
 
         // Grab the add-on configuration values
 
-        $listingTypes = Sanitize::getVar($this->c->Config,'quick2cart-listingtypes',array());
+        $listingTypes = $this->config->get('quick2cart-listingtypes',[]);
 
-        $sku_field = Sanitize::getVar($this->c->Config,'quick2cart-sku-field');
+        $sku_field = $this->c->config->{'quick2cart-sku-field'};
 
-        if(!in_array($data['Criteria']['id'], $listingTypes))
+        if ( !in_array($data['ListingType']['listing_type_id'], $listingTypes)  )
         {
             return $data;
         }
@@ -494,14 +492,14 @@ class Quick2cartComponent extends S2Component {
 
         // Check if there are any custom fields to process
 
-        if(empty($fields) || $model->name != 'Listing')
+        if ( empty($fields) || $model->name != 'Listing' )
         {
             return $data;
         }
 
         // LISTING logic
 
-        $listingFields = Sanitize::getVar($fields,'Listing',array());
+        $listingFields = Sanitize::getVar($fields,'Listing',[]);
 
         $pid = Sanitize::getInt($listing,'id');
 
@@ -509,13 +507,13 @@ class Quick2cartComponent extends S2Component {
 
         // Load field config settings
 
-        $priceArray = $discountPriceArray = array();
+        $priceArray = $discountPriceArray = [];
 
-        $priceArrayConfig = Sanitize::getVar($this->c->Config,'quick2cart-price',array());
+        $priceArrayConfig = $this->config->get('quick2cart-price',[]);
 
-        $discountPriceArrayConfig = Sanitize::getVar($this->c->Config,'quick2cart-discount-price',array());
+        $discountPriceArrayConfig = $this->config->get('quick2cart-discount-price',[]);
 
-        foreach($priceArrayConfig AS $priceRow)
+        foreach ( $priceArrayConfig AS $priceRow )
         {
             $price_field = $priceRow['field'];
 
@@ -527,7 +525,7 @@ class Quick2cartComponent extends S2Component {
             }
         }
 
-        foreach($discountPriceArrayConfig AS $priceRow)
+        foreach ( $discountPriceArrayConfig AS $priceRow )
         {
             $price_field = $priceRow['field'];
 
@@ -547,13 +545,13 @@ class Quick2cartComponent extends S2Component {
 
         // Abort if there isn't any price information to sync. We don't need to create the Q2C product at this time
 
-        if(empty($priceArray) && empty($discountPriceArray)) return $data;
+        if ( empty($priceArray) && empty($discountPriceArray) ) return $data;
 
         // Abort if new and the prices are zero
 
-        if($isNew && (array_sum($priceArray) + array_sum($discountPriceArray)) == 0) return $data;
+        if ( $isNew && (array_sum($priceArray) + array_sum($discountPriceArray)) == 0 ) return $data;
 
-        if($pid > 0)
+        if ( $pid > 0)
         {
             // Get Q2C item_id
 
@@ -565,7 +563,7 @@ class Quick2cartComponent extends S2Component {
 
             if(!$item_id)
             {
-                $product = array('state' => 1, 'name' => '', 'store_id' => 0, 'prodPriceDetails' => array());
+                $product = ['state' => 1, 'name' => '', 'store_id' => 0, 'prodPriceDetails' => []];
 
                 // If the Quick2Cart product doesn't exist, then we don't need to create it even when editing if the prices are zero
 
@@ -685,13 +683,15 @@ class Quick2cartComponent extends S2Component {
 
     function injectField($listing)
     {
-        $contentview = Sanitize::getInt($this->c->Config,'quick2cart-buy-detailview', 1);
+        $contentview = $this->config->get('quick2cart-buy-detailview',1);
 
-        $listview = Sanitize::getInt($this->c->Config,'quick2cart-buy-listview', 0);
+        $listview = $this->config->get('quick2cart-buy-listview',0);
 
         $Q2cartHelper = new comquick2cartHelper();
 
-        $output = $Q2cartHelper->getBuynow($listing['Listing']['listing_id'],'com_content',array('hideFreeDdownloads'=>true));
+        $Q2cartModel = new Quick2cartModelcart;
+
+        $output = $Q2cartHelper->getBuynow($listing['Listing']['listing_id'],'com_content',['hideFreeDdownloads'=>true]);
 
         $bannerFieldName = $this->getQ2cBannerFieldName($listing);
 
@@ -701,6 +701,20 @@ class Quick2cartComponent extends S2Component {
 
             return $listing;
         }
+
+        /*
+        $Q2cartProductHelper= $Q2cartHelper->loadqtcClass(JPATH_SITE . "/components/com_quick2cart/helpers/product.php", "productHelper");
+
+        $itemidAndState = $Q2cartModel->getitemidAndState($listing['Listing']['listing_id'], 'com_content');
+
+        $itemId = $itemidAndState['item_id'];
+
+        // $price = $Q2cartModel->getPrice($item_id, 1);
+
+        $priceArray = $Q2cartProductHelper->getProdPriceWithDefltAttributePrice($itemId);
+
+        $price = $Q2cartHelper->getFromattedPrice($priceArray['itemdetail']['price']);
+        */
 
         if(isset($listing['Field']['pairs']) && !empty($listing['Field']['pairs']))
         {
@@ -713,37 +727,36 @@ class Quick2cartComponent extends S2Component {
             }
         }
 
-        $field = array('jr_addon_quick2cart'=>array (
+        $field = ['jr_addon_quick2cart'=>[
                 'group_id' => 'quick2cart',
                 'name' => 'jr_addon_quick2cart',
                 'type' => 'banner',
                 'title' => '',
                 'description' => $output,
-                'value' => array('banner'),
-                'text' => array('banner'),
-                'image' => array(),
-                'properties' => array
-                (
+                'value' => ['banner'],
+                'text' => ['banner'],
+                'image' => [],
+                'properties' => [
                     'show_title' => 0,
                     'location' => 'content',
                     'contentview' => $contentview,
                     'listview' => $listview,
-                    'access_view' => implode(',',$this->c->Access->guests),
+                    'access_view' => implode(',',$this->c->auth->getGroupIdsFor('guest')),
                     'click2searchlink' => '',
                     'output_format' => '{fieldtext}',
                     'click2search' => 0
-                )
-            )
-        );
+                ]
+            ]
+        ];
 
-        $group = array('quick2cart'=>array(
-            'Group'=>array(
+        $group = ['quick2cart'=>[
+            'Group'=>[
                 'group_id'=>'quick2cart',
                 'title'=>'Quick2cart',
                 'name'=> 'quick2cart',
-                'show_title'=>0),
+                'show_title'=>0],
             'Fields'=>$field
-        ));
+        ]];
 
         // Insert in existing group
 
@@ -775,7 +788,7 @@ class Quick2cartComponent extends S2Component {
 
     function getQ2cBannerFieldName($listing)
     {
-        if(isset($listing['Field']['pairs']) && !empty($listing['Field']['pairs']))
+        if ( isset($listing['Field']['pairs']) && !empty($listing['Field']['pairs']) )
         {
             foreach($listing['Field']['pairs'] AS $key=>$row)
             {
@@ -794,7 +807,7 @@ class Quick2cartComponent extends S2Component {
 
     function removeQ2CBannerField($listing, $fname)
     {
-        if ($fname)
+        if ( $fname )
         {
             $groupName = $listing['Field']['pairs'][$fname]['group_name'];
 

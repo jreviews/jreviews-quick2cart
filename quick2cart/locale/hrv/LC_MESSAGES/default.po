@@ -1,0 +1,23 @@
+msgid "ADDON_QUICK2CART_EDIT"
+msgstr "Ažuriraj proizvod"
+
+msgid "ADDON_QUICK2CART_PAID_DOWNLOAD"
+msgstr "Naplatni download"
+
+msgid "ADDON_QUICK2CART_DOWNLOAD_NOT_AUTHORIZED"
+msgstr "Neautorizirano"
+
+msgid "ADDON_QUICK2CART_MY_DOWNLOADS"
+msgstr "Vidi moje downloade"
+
+msgid "ADDON_QUICK2CART_DOWNLOAD_FREE"
+msgstr "Besplatni download"
+
+msgid "ADDON_QUICK2CART_DOWNLOAD_PAID"
+msgstr "Naplatni download"
+
+msgid "ADDON_QUICK2CART_DOWNLOADS"
+msgstr "Downloadi"
+
+msgid "ADDON_QUICK2CART_LISTING_SUBMIT_ACTIONS"
+msgstr "Za dovršetak postavljanja proizvoda za vašu objavi idite na %s stranicu. Ovo možete nakon uploada medijskih zapisa, ili bilo kad kasnije na stranici proizvoda."

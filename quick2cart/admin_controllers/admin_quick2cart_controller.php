@@ -16,11 +16,11 @@ defined( 'MVC_FRAMEWORK') or die;
 
 class AdminQuick2cartController extends MyController
 {
-	var $uses = array('criteria','acl');
+	var $uses = ['acl'];
 
-	var $helpers = array('admin/admin_settings');
+	var $helpers = ['admin/admin_settings'];
 
-	var $components = array('config');
+	var $components = ['config'];
 
  	function beforeFilter()
 	{
@@ -31,21 +31,21 @@ class AdminQuick2cartController extends MyController
 	{
 		// We use an existing method in the Criteria model to get the Listing Types
 
-		$listingTypes = $this->Criteria->getSelectList();
+		$listingTypes = $this->listing_type->toList();
 
 		// Send the $listingTypes variable to the View
 
-		$this->set(array(
+		$this->set([
 			'listingTypes'=>$listingTypes,
 			'accessGroups'=>$this->Acl->getAccessGroupList()
-		));
+		]);
 
 		return $this->render('quick2cart','index');
 	}
 
 	function _save()
 	{
-		$this->Config->store($this->data['Config']);
+		$this->config->store($this->data['Config']);
 	}
 
 }

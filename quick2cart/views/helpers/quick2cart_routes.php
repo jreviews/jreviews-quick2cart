@@ -10,13 +10,13 @@
 
 defined( 'MVC_FRAMEWORK') or die;
 
-class Quick2cartRoutesHelper extends MyHelper
+class Quick2cartRoutesHelper extends BaseHelper
 {
-    var $helpers = array('html','routes');
+    var $helpers = ['html','routes'];
 
-    var $routes = array(
+    var $routes = [
         'edit'=>'index.php?option=com_jreviews&amp;Itemid=%s&amp;id=%s',
-    );
+    ];
 
     function __construct()
     {
@@ -32,11 +32,11 @@ class Quick2cartRoutesHelper extends MyHelper
         }
     }
 
-    function edit($listing, $attributes = array())
+    function edit($listing, $attributes = [])
     {
         $Menu = ClassRegistry::getClass('MenuModel');
 
-        $menu_id = $Menu->getMenuIdByViewParams('quick2cart',array('action'=>'edit'));
+        $menu_id = $Menu->getMenuIdByViewParams('quick2cart',['action'=>'edit']);
 
         $title = '<span class="jrIconCart"></span> <span>' . __t('ADDON_QUICK2CART_EDIT',true) . '</span>';
 
@@ -58,7 +58,7 @@ class Quick2cartRoutesHelper extends MyHelper
 
         $pattern = 'index.php?option=com_quick2cart&view=downloads';
 
-        $menu = $JMenu->getItems(array('link'),array($pattern),true);
+        $menu = $JMenu->getItems(['link'],[$pattern],true);
 
         if($menu)
         {
