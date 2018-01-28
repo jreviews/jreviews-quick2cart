@@ -19,7 +19,7 @@ To use the Add-on on your Joomla site you need:
 
 ## Installation
 
-Download the release that corresponds with your JReviews version and install the zip package using the Add-on Manager in the JReviews Administration.
+Download the release that corresponds with your JReviews version. Inside you'll find the LICENSE, README.md files and the quick2cart folder. Create a new zip package of the quick2cart folder (including the folder itself). Then use the JReviews Add-on Manager to install this new package.
 
 ## Support
 
