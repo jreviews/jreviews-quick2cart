@@ -17,6 +17,10 @@ To use the Add-on on your Joomla site you need:
 * Version 2.x of the Quick2Cart Add-on is compatible with JReviews 3.x
 * Version 1.x of the Quick2Cart Add-on is compatible with JReviews 2.x
 
+## Installation
+
+Download the release that corresponds with your JReviews version and install the zip package using the Add-on Manager in the JReviews Administration.
+
 ## Support
 
 This project is no longer being maintained and is provided AS IS without support.
