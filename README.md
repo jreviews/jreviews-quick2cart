@@ -1,6 +1,6 @@
 # JReviews Quick2Cart Add-on
 
-[JReviews](https://www.jreviews.com) is a Directory & Reviews solution for Joomla & WordPress sites.
+[JReviews](https://www.jreviews.com) is a Directory & Reviews solution for Joomla & WordPress sites. It can be used to build business directories, product catalogs, city guides, review websites, classifieds, paid listings, store locators and much more.
 
 ## Overview
 
