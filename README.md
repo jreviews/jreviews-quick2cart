@@ -2,7 +2,7 @@
 
 [JReviews](https://www.jreviews.com) is a Directory & Reviews solution for Joomla & WordPress sites. It can be used to build business directories, product catalogs, city guides, review websites, classifieds, paid listings, store locators and much more.
 
-**This project is no longer mantained**. You can get a simple, yet powerful, e-commerce store running with JReviews in Joomla and WordPress, with no overhead, by following the tutorial [E-commerce with JReviews](https://www.jreviews.com/blog/ecommerce-with-jreviews-and-stripe).
+**This project is no longer mantained**. You can get a simple, yet powerful, e-commerce store running with JReviews in Joomla and WordPress, with no overhead, by following the tutorial [E-commerce with JReviews and Stripe](https://www.jreviews.com/blog/ecommerce-with-jreviews-and-stripe).
 
 ## Overview
 
